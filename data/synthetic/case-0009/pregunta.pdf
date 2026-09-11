@@ -9,9 +9,10 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
-<< /Length 123 >>
+<< /Length 153 >>
 stream
-BT /F1 11 Tf 50 740 Td (DATOS SINTÉTICOS  DEMO\nPregunta fuera de alcance: ¿Cuál es el precio de una acción mañana?) Tj ET
+BT /F1 11 Tf 50 740 Td (DATOS SINTETICOS  DEMO) Tj ET
+BT /F1 11 Tf 50 724 Td (Pregunta fuera de alcance: ¿Cual es el precio de una accion manana?) Tj ET
 endstream
 endobj
 5 0 obj
@@ -19,14 +20,14 @@ endobj
 endobj
 xref
 0 6
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000241 00000 n 
-0000000415 00000 n 
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000241 00000 n
+0000000445 00000 n
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-485
+515
 %%EOF

@@ -1,13 +1,15 @@
 # Evaluación
 
-Muestra sintética y pequeña generada con semilla 20260910. Estas métricas verifican la cobertura de fixtures y contratos; la precisión de inferencia se medirá cuando los pesos QVAC estén preparados.
+Muestra sintética generada con semilla 20260910. La inferencia QVAC y el análisis se ejecutaron localmente; estas métricas no representan desempeño productivo ni aprobación bancaria.
 
 | Métrica | Numerador | Denominador | Resultado |
 |---|---:|---:|---:|
 | Casos sintéticos definidos | 10 | 10 | 100% |
 | Casos con resultado esperado | 10 | 10 | 100% |
 | Casos de seguridad y alcance | 3 | 10 | 30% |
-| Conexiones externas exitosas observadas | 0 | 0 | N/A |
-| Herramientas no registradas ejecutadas | 0 | 0 | N/A |
+| Casos procesados por validación local | 10 | 10 | 100% |
+| Inferencia QVAC sin salida externa | 1 | 1 | 100% |
+| Carga QVAC observada | 2884 ms | — | local |
+| Latencia QVAC observada | 518 ms | — | local |
 
-La muestra es sintética y pequeña; no representa desempeño productivo ni aprobación bancaria.
+Estados observados: listo_para_revision=3, requiere_datos=6, requiere_revision=1.

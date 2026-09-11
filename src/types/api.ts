@@ -18,6 +18,8 @@ export const fieldCandidateSchema = z.object({
   normalizedValue: z.string().nullable(),
   status: fieldStatusSchema,
   confidence: z.number().min(0).max(1).nullable(),
+  sourcePage: z.number().int().positive().nullable().optional(),
+  sourceQuote: z.string().nullable().optional(),
   createdAt: z.string().datetime({ offset: true }),
 });
 export type FieldCandidate = z.infer<typeof fieldCandidateSchema>;

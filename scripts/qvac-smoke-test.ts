@@ -36,6 +36,7 @@ try {
     latencyMs,
     offlineValidated: verifyOffline,
     modelSizeBytes: MODEL_DESCRIPTOR.expectedSize,
+    contextSize: 4096,
     smokeResponse: result.slice(0, 240),
     recordedAt: new Date().toISOString(),
   };

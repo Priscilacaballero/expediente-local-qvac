@@ -73,6 +73,15 @@ const migrationStatements = [
     FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE
   )`,
   `CREATE INDEX IF NOT EXISTS idx_agent_runs_case_id ON agent_runs(case_id)`,
+  `CREATE TABLE IF NOT EXISTS document_pages (
+    document_id TEXT NOT NULL,
+    page INTEGER NOT NULL,
+    text_content TEXT NOT NULL,
+    PRIMARY KEY (document_id, page),
+    FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
+  )`,
+  `ALTER TABLE field_candidates ADD COLUMN source_page INTEGER`,
+  `ALTER TABLE field_candidates ADD COLUMN source_quote TEXT`,
 ] as const;
 
 export function runMigrations(db: Database.Database): void {
@@ -83,7 +92,11 @@ export function runMigrations(db: Database.Database): void {
     migrationStatements.forEach((statement, index) => {
       const version = index + 1;
       if (appliedVersions.has(version)) return;
-      db.exec(statement);
+      try {
+        db.exec(statement);
+      } catch (error) {
+        if (!(statement.startsWith("ALTER TABLE") && error instanceof Error && error.message.includes("duplicate column name"))) throw error;
+      }
       db.prepare("INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)").run(version, new Date().toISOString());
     });
   });

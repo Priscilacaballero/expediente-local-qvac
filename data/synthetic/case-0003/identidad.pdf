@@ -9,9 +9,15 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
-<< /Length 215 >>
+<< /Length 395 >>
 stream
-BT /F1 11 Tf 50 740 Td (DATOS SINTÉTICOS  DEMO\nNombre: Carla Demo\nDocumento: DEMO-0003\nDirección: Calle Ficticia 3\nSituación laboral: independiente\nIngreso mensual: 3100 USD\nFuente de fondos: servicios) Tj ET
+BT /F1 11 Tf 50 740 Td (DATOS SINTETICOS  DEMO) Tj ET
+BT /F1 11 Tf 50 724 Td (Nombre: Carla Demo) Tj ET
+BT /F1 11 Tf 50 708 Td (Documento: DEMO-0003) Tj ET
+BT /F1 11 Tf 50 692 Td (Direccion: Calle Ficticia 3) Tj ET
+BT /F1 11 Tf 50 676 Td (Situacion laboral: independiente) Tj ET
+BT /F1 11 Tf 50 660 Td (Ingreso mensual: 3100 USD) Tj ET
+BT /F1 11 Tf 50 644 Td (Fuente de fondos: servicios) Tj ET
 endstream
 endobj
 5 0 obj
@@ -19,14 +25,14 @@ endobj
 endobj
 xref
 0 6
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000241 00000 n 
-0000000507 00000 n 
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000241 00000 n
+0000000687 00000 n
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-577
+757
 %%EOF

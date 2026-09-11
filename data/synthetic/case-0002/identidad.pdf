@@ -9,9 +9,14 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
-<< /Length 189 >>
+<< /Length 339 >>
 stream
-BT /F1 11 Tf 50 740 Td (DATOS SINTÉTICOS  DEMO\nNombre: Bruno Demo\nFecha de nacimiento: 1988-02-20\nDocumento: DEMO-0002\nDirección: Avenida Ficticia 2\nSituación laboral: empleado) Tj ET
+BT /F1 11 Tf 50 740 Td (DATOS SINTETICOS  DEMO) Tj ET
+BT /F1 11 Tf 50 724 Td (Nombre: Bruno Demo) Tj ET
+BT /F1 11 Tf 50 708 Td (Fecha de nacimiento: 1988-02-20) Tj ET
+BT /F1 11 Tf 50 692 Td (Documento: DEMO-0002) Tj ET
+BT /F1 11 Tf 50 676 Td (Direccion: Avenida Ficticia 2) Tj ET
+BT /F1 11 Tf 50 660 Td (Situacion laboral: empleado) Tj ET
 endstream
 endobj
 5 0 obj
@@ -19,14 +24,14 @@ endobj
 endobj
 xref
 0 6
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000241 00000 n 
-0000000481 00000 n 
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000241 00000 n
+0000000631 00000 n
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-551
+701
 %%EOF

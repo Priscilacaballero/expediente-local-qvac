@@ -21,7 +21,7 @@ npm run build
 npm test
 ```
 
-Los comandos `seed`, `offline` y `measure` preparan fixtures, verifican restricciones offline y generan métricas sintéticas.
+Los comandos `seed`, `offline`, `qvac:offline-smoke` y `measure` preparan la demo, verifican restricciones offline, prueban inferencia local y generan métricas.
 
 ## Problema y flujo
 
@@ -33,7 +33,7 @@ Una contradicción significa revisión humana; no prueba fraude. Una respuesta d
 
 - React 19 y Vite 7: interfaz de una sola pantalla.
 - Fastify 5: API local en `127.0.0.1:4173`.
-- SQLite con `better-sqlite3`: casos, documentos, campos, hallazgos, respuestas y ejecuciones.
+- SQLite con `better-sqlite3`: casos, documentos por página, campos, hallazgos, respuestas y ejecuciones.
 - `pdf-parse`: extracción de texto seleccionable por página.
 - MiniSearch: búsqueda local de `procedure-v1`.
 - Zod: validación de contratos.
@@ -53,11 +53,12 @@ npm run seed
 npm run build
 npm test
 npm run offline
+npm run qvac:offline-smoke
 npm run measure
-npm run dev
+npm start
 ```
 
-El servidor de API se ejecuta con `npm start` después del build. La interfaz de desarrollo de Vite está disponible en el puerto predeterminado de Vite; el servidor completo usa `127.0.0.1:4173`.
+`npm run seed` genera los PDFs sintéticos y los carga en SQLite. El servidor completo sirve la interfaz y la API en `127.0.0.1:4173`.
 
 ## Datos sintéticos
 
@@ -71,12 +72,7 @@ El controlador acepta únicamente `tool_call`, `message` y `finish`. Tiene máxi
 
 Se aceptan solo PDFs con texto seleccionable, MIME correcto y tamaño máximo de 10 MB. Se rechazan traversal, rutas, caracteres de control, citas no verificables y recursos de otro caso. `npm run offline` comprueba loopback y la ausencia de fallback; `docs/evaluation.md` conserva las métricas sintéticas y sus denominadores.
 
-## Reutilización y entrega
-
-El código de aplicación fue desarrollado para este reto. Se utilizan las dependencias listadas en `package.json` y el SDK/modelo de QVAC según sus respectivas licencias.
-
-El guion de demostración está en `docs/demo-script.md`. La muestra es sintética y pequeña y no representa una decisión bancaria real.
-
 ## Licencias y reutilización
 
 El código de aplicación fue desarrollado para este reto. Se utilizan las dependencias listadas en `package.json` y el SDK/modelo de QVAC según sus respectivas licencias.
+El guion de demostración está en `docs/demo-script.md`. La muestra es sintética y pequeña y no representa una decisión bancaria real.

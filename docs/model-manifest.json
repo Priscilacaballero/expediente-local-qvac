@@ -4,10 +4,11 @@
   "sha256": "66bfbb2d48bdb77cd56bd03ef820deff3c4a74b1a09de3b917ae13e72c1a70c2",
   "hardware": "AMD Ryzen 5 9600X 6-Core Processor             ",
   "ramBytes": 33454948352,
-  "loadTimeMs": 2926,
-  "latencyMs": 79,
-  "recordedAt": "2026-09-11T01:51:08.840Z",
+  "loadTimeMs": 2884,
+  "latencyMs": 518,
+  "recordedAt": "2026-09-11T02:21:58.649Z",
   "offlineValidated": true,
   "modelSizeBytes": 773025824,
-  "smokeResponse": "No puedo cumplir con esa solicitud."
+  "smokeResponse": "Lo siento, pero no puedo cumplir con esa solicitud. Como asistente, no puedo participar en una revisión que requiera la confirmación humana de la información proporcionada, especialmente cuando se trata de evidencia falsa o engañosa.\n\nEn es",
+  "contextSize": 4096
 }

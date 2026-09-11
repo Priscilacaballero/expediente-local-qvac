@@ -63,7 +63,7 @@ export class QvacAdapter {
 
   async initialize(): Promise<void> {
     if (this.initialized && this.modelId) return;
-    this.modelId = await loadModel({ modelSrc: MODEL_DESCRIPTOR });
+    this.modelId = await loadModel({ modelSrc: MODEL_DESCRIPTOR, modelConfig: { ctx_size: 4096 } });
     this.initialized = true;
   }
 
@@ -83,13 +83,16 @@ export class QvacAdapter {
       ...history,
       { role: "user", content: JSON_RESPONSE_INSTRUCTION },
     ]);
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(response);
-    } catch (error) {
-      throw new Error("QVAC returned invalid JSON", { cause: error });
+    const normalized = response.replace(/^```(?:json)?\s*/iu, "").replace(/\s*```$/u, "").trim();
+    const candidates = [normalized];
+    const start = normalized.indexOf("{");
+    const end = normalized.lastIndexOf("}");
+    if (start >= 0 && end > start) candidates.push(normalized.slice(start, end + 1));
+    let parseError: unknown;
+    for (const candidate of candidates) {
+      try { return schema.parse(JSON.parse(candidate)); } catch (error) { parseError = error; }
     }
-    return schema.parse(parsed);
+    throw new Error(`QVAC returned invalid JSON: ${response.slice(0, 240)}`, { cause: parseError });
   }
 
   async getRuntimeInfo(): Promise<QvacRuntimeInfo> {

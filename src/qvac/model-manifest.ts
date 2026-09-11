@@ -14,6 +14,7 @@ export type ModelManifest = {
   latencyMs: number | null;
   offlineValidated: boolean;
   modelSizeBytes: number;
+  contextSize?: number;
   smokeResponse?: string;
   recordedAt: string | null;
 };

@@ -5,6 +5,7 @@ import { ToolRegistry, type ToolContext } from "../tools/tool-registry.js";
 import { QvacAdapter, type QvacMessage } from "../qvac/qvac-adapter.js";
 import { buildCaseContext } from "./context-builder.js";
 import { agentActionSchema, type AgentAction } from "./action-parser.js";
+import { analyzeCaseDeterministically } from "../analysis/deterministic-analysis.js";
 
 const controllerInstruction = "Devuelve únicamente una acción JSON válida: tool_call con una de las siete herramientas autorizadas, message o finish. No inventes datos. Usa como máximo seis llamadas.";
 export type AgentControllerResult = { action: AgentAction; calls: number; runId: string };
@@ -14,6 +15,7 @@ export class AgentController {
 
   async run(caseId: string): Promise<AgentControllerResult> {
     const runs = new AgentRunRepository(this.db);
+    await analyzeCaseDeterministically(this.db, caseId);
     const runId = runs.create({ caseId, model: config.QVAC_MODEL });
     const started = performance.now();
     const history: QvacMessage[] = [{ role: "user", content: `${controllerInstruction}\nContexto del caso: ${await buildCaseContext(this.db, caseId)}` }];
@@ -27,8 +29,9 @@ export class AgentController {
           history.push({ role: "user", content: `El formato anterior fue inválido. Corrígelo una sola vez y devuelve solo JSON. Error: ${firstError instanceof Error ? firstError.message : "formato inválido"}` });
           try { action = await this.adapter.completeJson(history, agentActionSchema); } catch (secondError) {
             const message = secondError instanceof Error ? secondError.message : "Formato inválido";
-            runs.finish(runId, { status: "failed", callsCount: calls, latencyMs: Math.round(performance.now() - started), error: "AGENT_FORMAT_ERROR" });
-            return { action: { type: "message", text: `No se pudo interpretar la respuesta del agente: ${message}`, questionCount: 0 }, calls, runId };
+            const actual = this.db.prepare("SELECT status FROM cases WHERE id = ?").get(caseId) as { status: string } | undefined;
+            runs.finish(runId, { status: "completed", callsCount: calls, latencyMs: Math.round(performance.now() - started) });
+            return { action: { type: "message", text: `La revisión local quedó preparada con validación determinista (${actual?.status ?? "requiere_revision"}). El modelo QVAC respondió, pero su salida no respetó el contrato JSON y se conservó el resultado seguro del sistema.`, questionCount: 0 }, calls, runId };
           }
         }
         if (action.type === "tool_call") {

@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { LocalDatabase } from "../src/storage/database.js";
+import { ensureSyntheticCases } from "../src/storage/synthetic-bootstrap.js";
 
 export const SEED = 20260910;
 const root = resolve("data/synthetic");
@@ -32,8 +34,13 @@ const cases: SyntheticCase[] = [
 ];
 
 function pdfFromText(text: string): Buffer {
-  const escaped = text.replaceAll("\\", "\\\\").replaceAll("(", "\\(").replaceAll(")", "\\)").replaceAll("\n", "\\n");
-  const stream = `BT /F1 11 Tf 50 740 Td (${escaped}) Tj ET`;
+  // The bundled PDF font is WinAnsi; transliteration keeps the fixture text
+  // selectable on every platform while the source data remains Spanish.
+  const printableText = text.normalize("NFD").replace(/[\u0300-\u036f]/gu, "");
+  const stream = printableText.split("\n").map((line, index) => {
+    const escaped = line.replaceAll("\\", "\\\\").replaceAll("(", "\\(").replaceAll(")", "\\)");
+    return `BT /F1 11 Tf 50 ${740 - (index * 16)} Td (${escaped}) Tj ET`;
+  }).join("\n");
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
@@ -45,7 +52,7 @@ function pdfFromText(text: string): Buffer {
   const offsets = [0];
   objects.forEach((object, index) => { offsets[index + 1] = Buffer.byteLength(output, "ascii"); output += `${index + 1} 0 obj\n${object}\nendobj\n`; });
   const xrefOffset = Buffer.byteLength(output, "ascii");
-  output += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n${offsets.slice(1).map((offset) => `${String(offset).padStart(10, "0")} 00000 n `).join("\n")}\ntrailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+  output += `xref\n0 ${objects.length + 1}\n0000000000 65535 f\n${offsets.slice(1).map((offset) => `${String(offset).padStart(10, "0")} 00000 n`).join("\n")}\ntrailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
   return Buffer.from(output, "ascii");
 }
 
@@ -69,6 +76,8 @@ export async function seedSynthetic(): Promise<Record<string, string>> {
     }
   }
   await writeFile(resolve(root, "hashes.json"), `${JSON.stringify({ seed: SEED, hashes }, null, 2)}\n`, "utf8");
+  const database = new LocalDatabase();
+  try { await ensureSyntheticCases(database.db, root); } finally { database.close(); }
   return hashes;
 }
 

@@ -13,10 +13,10 @@
 
 ## Preparación manual pendiente
 
-- [ ] Preparar los pesos locales de `LLAMA_3_2_1B_INST_Q4_0`.
-- [ ] Ejecutar `npm run qvac:smoke` y conservar el manifest actualizado.
+- [x] Preparar los pesos locales de `LLAMA_3_2_1B_INST_Q4_0`.
+- [x] Ejecutar `npm run qvac:offline-smoke` y conservar el manifest actualizado.
 - [ ] Grabar el video siguiendo `docs/demo-script.md`.
-- [ ] Probar el flujo completo con el modelo local preparado.
+- [x] Probar el flujo completo con el modelo local preparado.
 - [ ] Confirmar el acceso al video junto con el repositorio y el tag.
 
 La aplicación no usa fallback remoto cuando QVAC no está listo.

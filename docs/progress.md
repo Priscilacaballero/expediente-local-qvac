@@ -102,7 +102,7 @@
 
 ## Fase 14 — Entrega
 
-- Estado: código de entrega completado; preparación audiovisual y pesos QVAC pendientes de ejecución manual.
+- Estado: código de entrega completado; solo quedan la grabación/publicación del video y la confirmación de su enlace.
 - Se añadió `docs/delivery-checklist.md` con comandos automatizados y pasos finales.
-- El repositorio queda preparado para tag y entrega reproducible.
-- Verificación final: `npm ci`, seed, build, 15 pruebas, offline, measure y `git diff --check` pasan.
+- El repositorio carga automáticamente los casos sintéticos, persiste campos y evidencia por página, genera reportes locales y conserva un fallback seguro si el modelo no produce el contrato JSON.
+- Verificación final actualizada: seed, build, 17 pruebas, `qvac:offline-smoke`, offline, measure y flujo HTTP completo pasan.

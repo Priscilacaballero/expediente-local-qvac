@@ -5,5 +5,6 @@ export async function readDocument(input: z.infer<typeof readDocumentInputSchema
   const row = context.db.prepare("SELECT text_content, page_count FROM documents WHERE case_id = ? AND id = ?").get(input.caseId, input.documentId) as { text_content: string; page_count: number | null } | undefined;
   if (!row) throw new Error("Documento no encontrado en el caso");
   if (row.page_count !== null && input.page > row.page_count) throw new Error("Página no encontrada");
-  return { caseId: input.caseId, documentId: input.documentId, page: input.page, text: input.page === 1 ? row.text_content : "" };
+  const page = context.db.prepare("SELECT text_content FROM document_pages WHERE document_id = ? AND page = ?").get(input.documentId, input.page) as { text_content: string } | undefined;
+  return { caseId: input.caseId, documentId: input.documentId, page: input.page, text: page?.text_content ?? (input.page === 1 ? row.text_content : "") };
 }
