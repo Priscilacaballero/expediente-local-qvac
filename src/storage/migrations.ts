@@ -82,6 +82,65 @@ const migrationStatements = [
   )`,
   `ALTER TABLE field_candidates ADD COLUMN source_page INTEGER`,
   `ALTER TABLE field_candidates ADD COLUMN source_quote TEXT`,
+  `CREATE TABLE IF NOT EXISTS product_catalog (
+    id TEXT PRIMARY KEY,
+    language TEXT NOT NULL CHECK (language IN ('es', 'en')),
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    audience TEXT NOT NULL,
+    requirements TEXT NOT NULL,
+    version TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_product_catalog_language ON product_catalog(language)`,
+  `CREATE TABLE IF NOT EXISTS education_guides (
+    id TEXT PRIMARY KEY,
+    language TEXT NOT NULL CHECK (language IN ('es', 'en')),
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    keywords TEXT NOT NULL,
+    version TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS orientation_requests (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL,
+    language TEXT NOT NULL CHECK (language IN ('es', 'en')),
+    message TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('draft', 'pending_human_review', 'closed')),
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product_catalog(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS transactions (
+    id TEXT PRIMARY KEY,
+    customer_ref TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    amount REAL NOT NULL,
+    currency TEXT NOT NULL,
+    beneficiary TEXT NOT NULL,
+    channel TEXT NOT NULL,
+    country TEXT NOT NULL,
+    synthetic INTEGER NOT NULL CHECK (synthetic = 1)
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_transactions_customer_time ON transactions(customer_ref, occurred_at)`,
+  `CREATE TABLE IF NOT EXISTS risk_alerts (
+    id TEXT PRIMARY KEY,
+    alert_type TEXT NOT NULL,
+    severity TEXT NOT NULL CHECK (severity IN ('info', 'warning', 'critical')),
+    message TEXT NOT NULL,
+    transaction_ids TEXT NOT NULL,
+    evidence TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status = 'pending_human_review'),
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS procedure_answers (
+    id TEXT PRIMARY KEY,
+    query TEXT NOT NULL,
+    language TEXT NOT NULL CHECK (language IN ('es', 'en')),
+    answer TEXT NOT NULL,
+    source_rule_ids TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`,
 ] as const;
 
 export function runMigrations(db: Database.Database): void {

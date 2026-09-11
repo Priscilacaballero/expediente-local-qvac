@@ -1,0 +1,10 @@
+{
+  "version": "catalog-v1",
+  "synthetic": true,
+  "products": [
+    { "id": "cuenta-basica-es", "language": "es", "name": "Cuenta básica Demo", "description": "Cuenta sintética para practicar ahorro y pagos cotidianos.", "audience": "Personas que buscan iniciar una relación bancaria.", "requirements": "Documento de identidad sintético y formulario de demostración." },
+    { "id": "cuenta-basica-en", "language": "en", "name": "Demo basic account", "description": "Synthetic account for practicing saving and everyday payments.", "audience": "People starting a banking relationship.", "requirements": "Synthetic identity document and demonstration form." },
+    { "id": "ahorro-programado-es", "language": "es", "name": "Ahorro programado Demo", "description": "Guía sintética para separar una cantidad periódica para una meta.", "audience": "Personas que desean organizar una meta de ahorro.", "requirements": "Meta de demostración y monto orientativo, sujetos a revisión humana." },
+    { "id": "ahorro-programado-en", "language": "en", "name": "Demo scheduled savings", "description": "Synthetic guide for setting aside a recurring amount toward a goal.", "audience": "People organizing a savings goal.", "requirements": "Demo goal and indicative amount, subject to human review." }
+  ]
+}

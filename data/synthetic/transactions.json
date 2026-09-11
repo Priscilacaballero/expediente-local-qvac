@@ -1,0 +1,11 @@
+{
+  "version": "transactions-v1",
+  "synthetic": true,
+  "transactions": [
+    { "id": "tx-0001", "customerRef": "customer-demo-01", "occurredAt": "2026-09-10T08:00:00Z", "amount": 120, "currency": "USD", "beneficiary": "merchant-1", "channel": "mobile", "country": "PA" },
+    { "id": "tx-0002", "customerRef": "customer-demo-01", "occurredAt": "2026-09-10T08:02:00Z", "amount": 135, "currency": "USD", "beneficiary": "merchant-2", "channel": "mobile", "country": "PA" },
+    { "id": "tx-0003", "customerRef": "customer-demo-01", "occurredAt": "2026-09-10T08:04:00Z", "amount": 128, "currency": "USD", "beneficiary": "merchant-3", "channel": "mobile", "country": "PA" },
+    { "id": "tx-0004", "customerRef": "customer-demo-02", "occurredAt": "2026-09-10T12:00:00Z", "amount": 4800, "currency": "USD", "beneficiary": "new-beneficiary-1", "channel": "web", "country": "XX" },
+    { "id": "tx-0005", "customerRef": "customer-demo-03", "occurredAt": "2026-09-10T13:00:00Z", "amount": 250, "currency": "USD", "beneficiary": "merchant-4", "channel": "branch", "country": "PA" }
+  ]
+}

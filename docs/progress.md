@@ -106,3 +106,11 @@
 - Se añadió `docs/delivery-checklist.md` con comandos automatizados y pasos finales.
 - El repositorio carga automáticamente los casos sintéticos, persiste campos y evidencia por página, genera reportes locales y conserva un fallback seguro si el modelo no produce el contrato JSON.
 - Verificación final actualizada: seed, build, 17 pruebas, `qvac:offline-smoke`, offline, measure y flujo HTTP completo pasan.
+
+## Expansión — Centro Bancario Local QVAC
+
+- Estado: implementada; quedan únicamente la grabación y publicación manual del video.
+- Se incorporaron Cliente/Inclusión, Documentos, Operación y Seguridad en una navegación única, con español/inglés, alto contraste, texto grande y estado offline.
+- Se añadieron catálogo, guías, solicitudes, procedimientos, transacciones y alertas sintéticas en SQLite; las alertas quedan siempre para revisión humana.
+- Se añadió PWA local con manifest y service worker, clasificación documental y detección de frecuencia, monto inusual y beneficiario nuevo.
+- Verificación: build, pruebas automatizadas, validación offline, métricas y smoke QVAC deben ejecutarse después del cierre de esta expansión.

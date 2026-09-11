@@ -1,0 +1,10 @@
+{
+  "version": "guides-v1",
+  "synthetic": true,
+  "guides": [
+    { "id": "budget-es", "language": "es", "title": "Presupuesto en tres pasos", "content": "Anota tus ingresos, separa tus gastos necesarios y define una meta pequeña. No compartas claves ni códigos de seguridad.", "keywords": "presupuesto ahorro seguridad" },
+    { "id": "security-es", "language": "es", "title": "Seguridad de tu cuenta", "content": "El banco nunca debe pedirte tu contraseña o código de un solo uso por un mensaje. Si dudas, detén la operación y busca un canal oficial.", "keywords": "seguridad contraseña fraude" },
+    { "id": "budget-en", "language": "en", "title": "A three-step budget", "content": "Write down your income, separate essential expenses, and set a small goal. Never share passwords or security codes.", "keywords": "budget savings security" },
+    { "id": "security-en", "language": "en", "title": "Account safety", "content": "A bank should never ask for your password or one-time code in a message. If unsure, stop and use an official channel.", "keywords": "security password fraud" }
+  ]
+}

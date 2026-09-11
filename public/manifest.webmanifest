@@ -1,0 +1,10 @@
+{
+  "name": "Centro Bancario Local QVAC",
+  "short_name": "Banca Local",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7f2",
+  "theme_color": "#1d2925",
+  "description": "Asistencia bancaria sintética con inteligencia local.",
+  "lang": "es"
+}

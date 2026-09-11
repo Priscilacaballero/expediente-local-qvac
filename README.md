@@ -25,7 +25,11 @@ Los comandos `seed`, `offline`, `qvac:offline-smoke` y `measure` preparan la dem
 
 ## Problema y flujo
 
-Expediente Local ayuda a un ejecutivo de sucursal a preparar expedientes bancarios de demostración para revisión humana. El sistema recibe documentos sintéticos, extrae texto y candidatos de campos, consulta un procedimiento ficticio, identifica faltantes o contradicciones y prepara un reporte factual.
+Expediente Local es ahora un Centro Bancario Local con cinco modos aislados de interfaz: Cliente, Inclusión, Documentos, Operación y Seguridad. Ayuda a orientar con contenido financiero sintético, revisar expedientes, consultar procedimientos y detectar señales de riesgo para revisión humana. Todo el procesamiento de IA ocurre localmente con QVAC; no hay APIs de inferencia en la nube.
+
+El modo Cliente ofrece productos, guías y asistente bilingüe con citas locales, además de borradores de orientación sin aprobación ni envío externo. Documentos conserva extracción, clasificación, hash y evidencia por página. Operación consulta procedimientos locales y revisa borradores. Seguridad evalúa transacciones sintéticas, contradicciones documentales e instrucciones maliciosas, sin bloquear cuentas, acusar fraude ni tomar decisiones automáticas.
+
+La interfaz es una PWA instalable con caché local de la aplicación y muestra el estado sin internet. Los catálogos `data/synthetic/banking-catalog.json`, `education-guides.json` y `transactions.json` están versionados y marcados como sintéticos.
 
 Una contradicción significa revisión humana; no prueba fraude. Una respuesta del ejecutivo permanece separada de la evidencia documental.
 
