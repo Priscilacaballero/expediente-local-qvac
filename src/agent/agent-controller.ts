@@ -16,7 +16,7 @@ export class AgentController {
   async run(caseId: string): Promise<AgentControllerResult> {
     const runs = new AgentRunRepository(this.db);
     await analyzeCaseDeterministically(this.db, caseId);
-    const runId = runs.create({ caseId, model: config.QVAC_MODEL });
+    const runId = runs.create({ caseId, model: config.QVAC_TEXT_MODEL });
     const started = performance.now();
     const history: QvacMessage[] = [{ role: "user", content: `${controllerInstruction}\nContexto del caso: ${await buildCaseContext(this.db, caseId)}` }];
     let calls = 0;

@@ -15,7 +15,7 @@ export const fieldStatusSchema = z.enum([
   "candidate",
   "missing",
   "conflict",
-  "user_reported",
+  "requires_review",
 ]);
 export type FieldStatus = z.infer<typeof fieldStatusSchema>;
 
@@ -30,7 +30,7 @@ export const evidenceSchema = z.object({
 });
 export type Evidence = z.infer<typeof evidenceSchema>;
 
-export const caseIdSchema = z.string().regex(/^case-[0-9]{4}$/);
+export const caseIdSchema = z.string().regex(/^case-(?:[0-9]{4}|user-[a-f0-9]{8})$/);
 export const fieldKeySchema = z.enum([
   "full_name",
   "date_of_birth",

@@ -49,10 +49,10 @@ export class DocumentRepository {
 export class FieldCandidateRepository {
   constructor(private readonly db: Database.Database) {}
 
-  create(input: { caseId: string; documentId?: string; fieldKey: FieldKey; value?: string; normalizedValue?: string; status: FieldStatus; confidence?: number }, id = randomUUID()): string {
+  create(input: { caseId: string; documentId?: string; fieldKey: FieldKey; value?: string; normalizedValue?: string; status: FieldStatus; confidence?: number; extractionMethod?: string; producerModel?: string; producerModelSha256?: string; sourceAssetId?: string; bbox?: [number, number, number, number] }, id = randomUUID()): string {
     fieldKeySchema.parse(input.fieldKey);
     fieldStatusSchema.parse(input.status);
-    this.db.prepare("INSERT INTO field_candidates (id, case_id, document_id, field_key, value_text, normalized_value, status, confidence, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(id, input.caseId, input.documentId ?? null, input.fieldKey, input.value ?? null, input.normalizedValue ?? null, input.status, input.confidence ?? null, now());
+    this.db.prepare("INSERT INTO field_candidates (id, case_id, document_id, field_key, value_text, normalized_value, status, confidence, created_at, extraction_method, producer_model, producer_model_sha256, source_asset_id, bbox) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(id, input.caseId, input.documentId ?? null, input.fieldKey, input.value ?? null, input.normalizedValue ?? null, input.status, input.confidence ?? null, now(), input.extractionMethod ?? null, input.producerModel ?? null, input.producerModelSha256 ?? null, input.sourceAssetId ?? null, input.bbox ? JSON.stringify(input.bbox) : null);
     return id;
   }
 

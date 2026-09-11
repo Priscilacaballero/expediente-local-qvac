@@ -24,7 +24,7 @@ describe("document ingestion and evidence", () => {
 
   it("rejects unsafe metadata and unverifiable quotes", async () => {
     expect(() => validateDocumentMetadata({ filename: "..\\secreto.pdf", mimeType: "application/pdf", size: 10 })).toThrow(DocumentPolicyError);
-    expect(() => validateDocumentMetadata({ filename: "imagen.png", mimeType: "image/png", size: 10 })).toThrow(DocumentPolicyError);
+    expect(() => validateDocumentMetadata({ filename: "imagen.png", mimeType: "text/plain", size: 10 })).toThrow(DocumentPolicyError);
     const data = await readFile(validPdfPath);
     const document = await ingestPdf(data, { filename: "identidad.pdf", mimeType: "application/pdf" });
     expect(() => createEvidence({ documentId: "doc-1", page: 1, quote: "cita inventada", sha256: document.sha256 }, document.pages)).toThrow(EvidenceValidationError);

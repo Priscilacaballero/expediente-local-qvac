@@ -1,5 +1,5 @@
 export type CaseSummary = { id: string; status: string; createdAt: string; updatedAt: string };
-export type ApiDocument = { id: string; filename: string; pageCount: number | null; sha256: string };
+export type ApiDocument = { id: string; filename: string; mimeType?: string; pageCount: number | null; sha256: string; processingStatus?: string; processingError?: string | null; extractionMethod?: string | null; producerModel?: string | null; currentPage?: number | null; totalPages?: number | null };
 export type ApiField = { id: string; fieldKey: string; value: string | null; normalizedValue: string | null; status: string; documentId: string | null; sourcePage: number | null; sourceQuote: string | null };
 export type ApiFinding = { id: string; ruleId: string; severity: string; kind: string; message: string; documentId: string | null; page: number | null; quote: string | null };
 export type Product = { id: string; language: "es" | "en"; name: string; description: string; audience: string; requirements: string; version: string };

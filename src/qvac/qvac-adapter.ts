@@ -1,5 +1,6 @@
 import {
   completion,
+  ocr,
   getLoadedModelInfo,
   getSystemResources,
   loadModel,
@@ -8,7 +9,7 @@ import {
 } from "@qvac/sdk";
 import { z } from "zod";
 import { config } from "../config.js";
-import { MODEL_DESCRIPTOR, MODEL_NAME } from "./model-manifest.js";
+import { DOCUMENT_MODEL_MANIFEST, MODEL_DESCRIPTOR, MODEL_NAME, OCR_MODEL_NAME, VISION_MODEL_NAME } from "./model-manifest.js";
 import { CLIENT_ASSISTANT_SYSTEM_PROMPT, JSON_RESPONSE_INSTRUCTION, SYSTEM_PROMPT } from "./prompts.js";
 
 export type QvacMessage = CompletionParams["history"][number];
@@ -58,13 +59,45 @@ export function extractRuntimeResources(resources: unknown): Pick<QvacRuntimeInf
 
 export class QvacAdapter {
   private modelId: string | null = null;
+  private ocrModelId: string | null = null;
+  private visionModelId: string | null = null;
   private initialized = false;
   private readonly sdkVersion = "0.19.0";
 
   async initialize(): Promise<void> {
+    await this.initializeText();
+  }
+
+  async initializeText(): Promise<void> {
     if (this.initialized && this.modelId) return;
     this.modelId = await loadModel({ modelSrc: MODEL_DESCRIPTOR, modelConfig: { ctx_size: 4096 } });
     this.initialized = true;
+  }
+
+  async initializeOcr(): Promise<void> {
+    if (this.ocrModelId) return;
+    this.ocrModelId = await loadModel({ modelSrc: DOCUMENT_MODEL_MANIFEST.ocr.descriptor, modelConfig: { langList: ["en", "es"] } });
+  }
+
+  async initializeVision(): Promise<void> {
+    if (this.visionModelId) return;
+    this.visionModelId = await loadModel({ modelSrc: DOCUMENT_MODEL_MANIFEST.vision.descriptor, modelConfig: { ctx_size: 2048, projectionModelSrc: DOCUMENT_MODEL_MANIFEST.mmproj.descriptor } });
+  }
+
+  async ocr(image: Buffer): Promise<Array<{ text: string; bbox: [number, number, number, number] | null; confidence: number | null }>> {
+    if (!this.ocrModelId) throw new Error(`${OCR_MODEL_NAME} no está preparado`);
+    const result = await ocr({ modelId: this.ocrModelId, image: Buffer.from(image) as never });
+    return (await result.blocks).map(block => ({ text: block.text, bbox: block.bbox ?? null, confidence: block.confidence ?? null }));
+  }
+
+  async analyzeImage(imagePath: string, prompt: string): Promise<string> {
+    if (!this.visionModelId) throw new Error(`${VISION_MODEL_NAME} no está preparado`);
+    const run = completion({ modelId: this.visionModelId, history: [{ role: "user", content: prompt, attachments: [{ path: imagePath }] }], stream: false });
+    return (await run.final).contentText;
+  }
+
+  getCapabilities(): { text: boolean; ocr: boolean; vision: boolean; models: { text: string; ocr: string; vision: string; mmproj: string } } {
+    return { text: this.isReady(), ocr: this.ocrModelId !== null, vision: this.visionModelId !== null, models: { text: MODEL_NAME, ocr: OCR_MODEL_NAME, vision: VISION_MODEL_NAME, mmproj: DOCUMENT_MODEL_MANIFEST.mmproj.model } };
   }
 
   async complete(history: QvacMessage[]): Promise<string> {
@@ -126,11 +159,16 @@ export class QvacAdapter {
   }
 
   async shutdown(): Promise<void> {
-    if (!this.modelId) return;
-    await unloadModel({ modelId: this.modelId });
+    if (this.modelId) await unloadModel({ modelId: this.modelId });
+    if (this.ocrModelId) await unloadModel({ modelId: this.ocrModelId });
+    if (this.visionModelId) await unloadModel({ modelId: this.visionModelId });
     this.modelId = null;
+    this.ocrModelId = null;
+    this.visionModelId = null;
     this.initialized = false;
   }
+
+  async shutdownAll(): Promise<void> { await this.shutdown(); }
 
   async getLoadedModelInfo(): Promise<unknown> {
     if (!this.modelId) return null;

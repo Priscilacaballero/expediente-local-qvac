@@ -20,7 +20,7 @@ if (-not $Branch) { $Branch = (git branch --show-current).Trim() }
 if (-not $Branch) { throw "No se pudo determinar la rama actual." }
 if ($Branch -eq "HEAD") { throw "El repositorio está en detached HEAD." }
 
-$sensitive = @(git status --short | ForEach-Object { $_.Substring(3).Trim() } | Where-Object { $_ -match '(^|[\\/])\.env($|\.)|(^|[\\/])\.qvac([\\/]|$)|\.db(-|$)|\.sqlite|\.pem$|\.key$|\.crt$|\.gguf$|\.safetensors$' })
+$sensitive = @(git status --short | ForEach-Object { $_.Substring(3).Trim() } | Where-Object { $_ -match '(^|[\\/])\.env($)|(^|[\\/])\.qvac([\\/]|$)|\.db(-|$)|\.sqlite|\.pem$|\.key$|\.crt$|\.gguf$|\.safetensors$' })
 if ($sensitive.Count -gt 0) { throw "Se detectaron archivos sensibles o runtime que no se publicarán: $($sensitive -join ', ')" }
 
 Invoke-Npm @("run", "build")

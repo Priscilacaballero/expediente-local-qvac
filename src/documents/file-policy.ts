@@ -14,8 +14,11 @@ export class DocumentPolicyError extends Error {
 
 export function validateDocumentMetadata(metadata: DocumentMetadata): void {
   const parsed = documentMetadataSchema.parse(metadata);
-  if (parsed.mimeType !== "application/pdf" || !parsed.filename.toLowerCase().endsWith(".pdf")) {
-    throw new DocumentPolicyError("Solo se aceptan archivos PDF con MIME application/pdf");
+  const allowed = (parsed.mimeType === "application/pdf" && parsed.filename.toLowerCase().endsWith(".pdf"))
+    || (parsed.mimeType === "image/png" && parsed.filename.toLowerCase().endsWith(".png"))
+    || (parsed.mimeType === "image/jpeg" && /\.jpe?g$/iu.test(parsed.filename));
+  if (!allowed) {
+    throw new DocumentPolicyError("Solo se aceptan PDF, PNG o JPG con MIME válido");
   }
   if (parsed.size > config.MAX_DOCUMENT_SIZE_BYTES) {
     throw new DocumentPolicyError("El documento supera el límite de 10 MB");
