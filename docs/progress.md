@@ -99,3 +99,10 @@
 - README ampliado con problema, flujo, arquitectura, QVAC, modelo, SDK, instalación, offline, datos sintéticos, agente, herramientas, seguridad, evaluación, reutilización y límites.
 - Se añadió `docs/demo-script.md` para reproducir la demostración.
 - Verificación: offline, evaluación, build y suite pasan con 15 pruebas aprobadas.
+
+## Fase 14 — Entrega
+
+- Estado: código de entrega completado; preparación audiovisual y pesos QVAC pendientes de ejecución manual.
+- Se añadió `docs/delivery-checklist.md` con comandos automatizados y pasos finales.
+- El repositorio queda preparado para tag y entrega reproducible.
+- Verificación final: `npm ci`, seed, build, 15 pruebas, offline, measure y `git diff --check` pasan.
