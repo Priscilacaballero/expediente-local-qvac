@@ -30,3 +30,11 @@
 - Se definieron diez casos sintéticos con resultados esperados y escenarios de faltantes, conflictos, PDF vacío, imagen, prompt injection y pregunta fuera de alcance.
 - Se creó un generador determinista con semilla `20260910`, PDFs de texto seleccionable y hashes SHA-256.
 - Verificación: `npm run seed` genera 10 casos, 13 documentos/hashes y confirma determinismo; `npm run build` y `npm test` pasan con 4 pruebas aprobadas.
+
+## Fase 5 — Ingestión y evidencia
+
+- Estado: implementada y verificada.
+- Se añadieron políticas para aceptar únicamente PDF con MIME correcto, límite de 10 MB y nombres sin rutas, traversal ni caracteres de control.
+- Se implementó extracción de texto por página con SHA-256 y rechazo de PDF sin texto seleccionable.
+- Se implementó validación literal de citas antes de crear evidencias.
+- Verificación: PDF sintético aceptado con texto y hash; cita exacta verificada; PDF vacío rechazado; metadata insegura y cita inventada rechazadas. `npm run build` y `npm test` pasan con 7 pruebas aprobadas.
