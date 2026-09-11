@@ -1,5 +1,5 @@
 import Fastify, { type FastifyInstance } from "fastify";
-import { readFile } from "node:fs/promises";
+import { readFile, rm } from "node:fs/promises";
 import multipart from "@fastify/multipart";
 import fastifyStatic from "@fastify/static";
 import { randomUUID } from "node:crypto";
@@ -51,6 +51,14 @@ export async function buildApp(dependencies?: AppDependencies): Promise<{ app: F
   app.get<{ Params: { caseId: string; documentId: string } }>("/api/cases/:caseId/documents/:documentId/assets", async (request, reply) => {
     if (!active.db.db.prepare("SELECT 1 FROM documents WHERE id = ? AND case_id = ?").get(request.params.documentId, request.params.caseId)) return reply.code(404).send({ code: errors.NOT_FOUND, message: "Documento no encontrado" });
     return active.db.db.prepare("SELECT id, page, asset_type AS assetType, mime_type AS mimeType, sha256, width, height, created_at AS createdAt FROM document_assets WHERE document_id = ? ORDER BY page, id").all(request.params.documentId);
+  });
+  app.delete<{ Params: { caseId: string; documentId: string } }>("/api/cases/:caseId/documents/:documentId", async (request, reply) => {
+    const row = active.db.db.prepare("SELECT id FROM documents WHERE id = ? AND case_id = ?").get(request.params.documentId, request.params.caseId) as { id: string } | undefined;
+    if (!row) return reply.code(404).send({ code: errors.NOT_FOUND, message: "Documento no encontrado" });
+    const assets = active.db.db.prepare("SELECT local_path AS localPath FROM document_assets WHERE document_id = ?").all(row.id) as Array<{ localPath: string }>;
+    active.db.db.prepare("DELETE FROM documents WHERE id = ? AND case_id = ?").run(row.id, request.params.caseId);
+    for (const asset of assets) { if (asset.localPath.startsWith(resolve(".qvac/document-assets"))) await rm(asset.localPath, { force: true }); }
+    return reply.code(204).send();
   });
   app.post<{ Params: { caseId: string; documentId: string } }>("/api/cases/:caseId/documents/:documentId/reprocess", async (request, reply) => {
     if (!active.db.db.prepare("SELECT 1 FROM documents WHERE id = ? AND case_id = ?").get(request.params.documentId, request.params.caseId)) return reply.code(404).send({ code: errors.NOT_FOUND, message: "Documento no encontrado" });
