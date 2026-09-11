@@ -141,6 +141,7 @@ const migrationStatements = [
     source_rule_ids TEXT NOT NULL,
     created_at TEXT NOT NULL
   )`,
+  `ALTER TABLE product_catalog ADD COLUMN search_terms TEXT NOT NULL DEFAULT ''`,
 ] as const;
 
 export function runMigrations(db: Database.Database): void {
