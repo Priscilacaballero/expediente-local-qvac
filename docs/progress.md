@@ -38,3 +38,11 @@
 - Se implementó extracción de texto por página con SHA-256 y rechazo de PDF sin texto seleccionable.
 - Se implementó validación literal de citas antes de crear evidencias.
 - Verificación: PDF sintético aceptado con texto y hash; cita exacta verificada; PDF vacío rechazado; metadata insegura y cita inventada rechazadas. `npm run build` y `npm test` pasan con 7 pruebas aprobadas.
+
+## Fase 6 — Búsqueda del procedimiento
+
+- Estado: implementada y verificada.
+- Se creó un índice local e inmutable de `procedure-v1` con MiniSearch.
+- Las búsquedas devuelven como máximo cinco reglas e incluyen siempre `procedureVersion` y `rule_id`.
+- Se rechazan URLs, rutas y caracteres de control.
+- Verificación: build y suite pasan con 9 pruebas aprobadas.
