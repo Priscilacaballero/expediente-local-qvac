@@ -21,7 +21,61 @@ npm run build
 npm test
 ```
 
-Los comandos `seed`, `offline` y `measure` quedarán habilitados conforme se incorporen sus fases correspondientes.
+Los comandos `seed`, `offline` y `measure` preparan fixtures, verifican restricciones offline y generan métricas sintéticas.
+
+## Problema y flujo
+
+Expediente Local ayuda a un ejecutivo de sucursal a preparar expedientes bancarios de demostración para revisión humana. El sistema recibe documentos sintéticos, extrae texto y candidatos de campos, consulta un procedimiento ficticio, identifica faltantes o contradicciones y prepara un reporte factual.
+
+Una contradicción significa revisión humana; no prueba fraude. Una respuesta del ejecutivo permanece separada de la evidencia documental.
+
+## Arquitectura
+
+- React 19 y Vite 7: interfaz de una sola pantalla.
+- Fastify 5: API local en `127.0.0.1:4173`.
+- SQLite con `better-sqlite3`: casos, documentos, campos, hallazgos, respuestas y ejecuciones.
+- `pdf-parse`: extracción de texto seleccionable por página.
+- MiniSearch: búsqueda local de `procedure-v1`.
+- Zod: validación de contratos.
+- QVAC SDK: única ruta de inferencia local.
+
+## QVAC y modelo
+
+El modelo configurado es `LLAMA_3_2_1B_INST_Q4_0`. La aplicación no usa API de nube, embeddings remotos, OCR, voz, scoring, fraude, transacciones ni proveedor alternativo. La descarga de pesos se realiza manualmente durante la preparación del entorno; después el smoke test se ejecuta con `npm run qvac:smoke`.
+
+El hardware y la memoria observados se registran en `docs/model-manifest.json` cuando el smoke test real se ejecuta.
+
+## Instalación y ejecución
+
+```bash
+npm ci
+npm run seed
+npm run build
+npm test
+npm run offline
+npm run measure
+npm run dev
+```
+
+El servidor de API se ejecuta con `npm start` después del build. La interfaz de desarrollo de Vite está disponible en el puerto predeterminado de Vite; el servidor completo usa `127.0.0.1:4173`.
+
+## Datos sintéticos
+
+Los fixtures se generan con la semilla `20260910` y llevan la marca `DATOS SINTÉTICOS — DEMO`. Hay diez casos: completo, faltantes, discrepancias, PDF vacío, imagen, prompt injection, pregunta fuera de alcance y respuesta separada. `data/synthetic/hashes.json` permite comprobar que dos generaciones sean iguales.
+
+## Agente y herramientas
+
+El controlador acepta únicamente `tool_call`, `message` y `finish`. Tiene máximo seis llamadas, un reintento de formato y valida el estado final mediante código. Las siete herramientas autorizadas son `list_documents`, `read_document`, `extract_fields`, `search_procedure`, `validate_case`, `record_user_answer` y `prepare_report`.
+
+## Seguridad y evaluación
+
+Se aceptan solo PDFs con texto seleccionable, MIME correcto y tamaño máximo de 10 MB. Se rechazan traversal, rutas, caracteres de control, citas no verificables y recursos de otro caso. `npm run offline` comprueba loopback y la ausencia de fallback; `docs/evaluation.md` conserva las métricas sintéticas y sus denominadores.
+
+## Reutilización y entrega
+
+El código de aplicación fue desarrollado para este reto. Se utilizan las dependencias listadas en `package.json` y el SDK/modelo de QVAC según sus respectivas licencias.
+
+El guion de demostración está en `docs/demo-script.md`. La muestra es sintética y pequeña y no representa una decisión bancaria real.
 
 ## Licencias y reutilización
 

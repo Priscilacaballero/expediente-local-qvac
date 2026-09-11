@@ -92,3 +92,10 @@
 - Se añadió `npm run measure` para generar `docs/evaluation.md` con numeradores, denominadores y límites de la muestra sintética.
 - La evaluación cubre los 10 casos definidos, resultados esperados y escenarios de seguridad/alcance.
 - Verificación: evaluación generada, build y suite pasan con 15 pruebas aprobadas.
+
+## Fase 13 — Documentación
+
+- Estado: implementada y verificada.
+- README ampliado con problema, flujo, arquitectura, QVAC, modelo, SDK, instalación, offline, datos sintéticos, agente, herramientas, seguridad, evaluación, reutilización y límites.
+- Se añadió `docs/demo-script.md` para reproducir la demostración.
+- Verificación: offline, evaluación, build y suite pasan con 15 pruebas aprobadas.
