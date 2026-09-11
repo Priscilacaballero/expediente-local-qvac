@@ -46,3 +46,11 @@
 - Las búsquedas devuelven como máximo cinco reglas e incluyen siempre `procedureVersion` y `rule_id`.
 - Se rechazan URLs, rutas y caracteres de control.
 - Verificación: build y suite pasan con 9 pruebas aprobadas.
+
+## Fase 7 — Herramientas del agente
+
+- Estado: implementada y verificada.
+- Se registraron exactamente las siete herramientas autorizadas del plan.
+- Se añadieron validación de documentos, extracción de candidatos, validación determinista, respuestas separadas y reporte factual desde SQLite.
+- Las herramientas validan el caso solicitado y rechazan registros no autorizados.
+- Verificación: build y suite pasan con 12 pruebas aprobadas.
