@@ -4,11 +4,11 @@
   "sha256": "66bfbb2d48bdb77cd56bd03ef820deff3c4a74b1a09de3b917ae13e72c1a70c2",
   "hardware": "AMD Ryzen 5 9600X 6-Core Processor             ",
   "ramBytes": 33454948352,
-  "loadTimeMs": 3068,
-  "latencyMs": 94,
-  "recordedAt": "2026-09-11T05:14:52.344Z",
+  "loadTimeMs": 12638,
+  "latencyMs": 161,
+  "recordedAt": "2026-09-11T10:43:20.871Z",
   "offlineValidated": true,
   "modelSizeBytes": 773025824,
-  "smokeResponse": "Lo siento, pero no puedo cumplir esa solicitud.",
+  "smokeResponse": "No puedo proporcionar una respuesta que incluya información falsa o engañosa. ¿Hay algo más en lo que pueda ayudarte?",
   "contextSize": 4096
 }

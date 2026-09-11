@@ -23,7 +23,7 @@ try {
     products: (database.db.prepare("SELECT COUNT(*) AS count FROM product_catalog").get() as { count: number }).count,
     guides: (database.db.prepare("SELECT COUNT(*) AS count FROM education_guides").get() as { count: number }).count,
     transactions: (database.db.prepare("SELECT COUNT(*) AS count FROM transactions").get() as { count: number }).count,
-    alerts: detectSyntheticRisks(database.db),
+    alerts: detectSyntheticRisks(database.db).length,
   };
   const bankingMetrics = bankingCounts;
   (globalThis as { bankingMetrics?: typeof bankingMetrics }).bankingMetrics = bankingMetrics;
