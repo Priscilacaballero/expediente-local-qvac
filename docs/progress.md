@@ -54,3 +54,11 @@
 - Se añadieron validación de documentos, extracción de candidatos, validación determinista, respuestas separadas y reporte factual desde SQLite.
 - Las herramientas validan el caso solicitado y rechazan registros no autorizados.
 - Verificación: build y suite pasan con 12 pruebas aprobadas.
+
+## Fase 8 — Controlador agéntico
+
+- Estado: implementada y verificada.
+- Se añadió contexto de caso limitado, contrato de acciones JSON y bucle agéntico con máximo seis llamadas.
+- Se permite un solo reintento de formato y se devuelve `AGENT_FORMAT_ERROR` si vuelve a fallar.
+- Se validan herramientas, respuestas separadas y estado final mediante código.
+- Verificación: build y suite pasan con 14 pruebas aprobadas.
