@@ -29,7 +29,12 @@ function asNumber(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function extractRuntimeResources(resources: unknown): Pick<QvacRuntimeInfo, "hardware" | "ramBytes"> {
+function metricValue(value: unknown): unknown {
+  if (!value || typeof value !== "object") return undefined;
+  return (value as Record<string, unknown>).value;
+}
+
+export function extractRuntimeResources(resources: unknown): Pick<QvacRuntimeInfo, "hardware" | "ramBytes"> {
   if (!resources || typeof resources !== "object") return { hardware: null, ramBytes: null };
   const record = resources as Record<string, unknown>;
   const capabilities = record.capabilities;
@@ -39,13 +44,12 @@ function extractRuntimeResources(resources: unknown): Pick<QvacRuntimeInfo, "har
   const totalBytes = memory && typeof memory === "object"
     ? (memory as Record<string, unknown>).totalBytes
     : undefined;
-  const totalValue = totalBytes && typeof totalBytes === "object"
-    ? (totalBytes as Record<string, unknown>).value
-    : undefined;
+  const totalValue = metricValue(totalBytes);
   const cpu = capabilityRecord.cpu;
-  const cpuName = cpu && typeof cpu === "object"
-    ? (cpu as Record<string, unknown>).name
-    : undefined;
+  const cpuValue = metricValue(cpu);
+  const cpuName = metricValue(cpuValue && typeof cpuValue === "object"
+    ? (cpuValue as Record<string, unknown>).name
+    : undefined);
   return {
     hardware: typeof cpuName === "string" ? cpuName : null,
     ramBytes: asNumber(totalValue),

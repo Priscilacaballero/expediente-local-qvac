@@ -12,6 +12,9 @@ export type ModelManifest = {
   ramBytes: number | null;
   loadTimeMs: number | null;
   latencyMs: number | null;
+  offlineValidated: boolean;
+  modelSizeBytes: number;
+  smokeResponse?: string;
   recordedAt: string | null;
 };
 

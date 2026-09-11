@@ -2,11 +2,11 @@
 
 Asistente local para preparar y revisar expedientes bancarios sintéticos, con inferencia ejecutada mediante QVAC y evidencia trazable para revisión humana.
 
-Este proyecto usa únicamente datos sintéticos para demostración. La inferencia se ejecutará localmente con QVAC; no se enviarán documentos ni datos del expediente a servicios de nube.
+Este proyecto usa únicamente datos sintéticos para demostración. La inferencia se ejecuta localmente con QVAC; no se envían documentos ni datos del expediente a servicios de nube.
 
 ## Estado del desarrollo
 
-El proyecto se implementa fase por fase según el plan operativo. La primera fase establece el bootstrap técnico; las capacidades de negocio se incorporarán en las fases siguientes.
+La validación local de QVAC ya fue ejecutada en esta máquina. Las mediciones y la huella del modelo se conservan en `docs/model-manifest.json`.
 
 ## Requisitos
 
@@ -41,9 +41,9 @@ Una contradicción significa revisión humana; no prueba fraude. Una respuesta d
 
 ## QVAC y modelo
 
-El modelo configurado es `LLAMA_3_2_1B_INST_Q4_0`. La aplicación no usa API de nube, embeddings remotos, OCR, voz, scoring, fraude, transacciones ni proveedor alternativo. La descarga de pesos se realiza manualmente durante la preparación del entorno; después el smoke test se ejecuta con `npm run qvac:smoke`.
+El modelo configurado es `LLAMA_3_2_1B_INST_Q4_0`. La aplicación no usa API de nube, embeddings remotos, OCR, voz, scoring, fraude, transacciones ni proveedor alternativo. La primera ejecución de `npm run qvac:smoke` descarga el peso oficial de QVAC al caché local; las siguientes cargas reutilizan esa copia.
 
-El hardware y la memoria observados se registran en `docs/model-manifest.json` cuando el smoke test real se ejecuta.
+Ejecuta `npm run qvac:offline-smoke` tras preparar los pesos. Este comando bloquea las conexiones externas controladas por Node y solo conserva el loopback necesario para QVAC; falla si detecta un intento de salida.
 
 ## Instalación y ejecución
 

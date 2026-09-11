@@ -15,7 +15,8 @@
     "seed": "tsx scripts/seed-synthetic.ts",
     "offline": "tsx scripts/verify-offline.ts",
     "measure": "tsx scripts/measure.ts",
-    "qvac:smoke": "tsx scripts/qvac-smoke-test.ts"
+    "qvac:smoke": "tsx scripts/qvac-smoke-test.ts",
+    "qvac:offline-smoke": "tsx scripts/qvac-smoke-test.ts --offline"
   },
   "dependencies": {
     "@qvac/sdk": "latest",
