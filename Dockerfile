@@ -2,7 +2,7 @@ FROM node:22-bookworm-slim AS build
 
 WORKDIR /app
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates libatomic1 libgcc-s1 libstdc++6 \
+    && apt-get install -y --no-install-recommends ca-certificates libatomic1 libgcc-s1 libstdc++6 libvulkan1 \
   && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -19,7 +19,7 @@ ENV MAX_DOCUMENT_SIZE_BYTES=10485760
 
 WORKDIR /app
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates libatomic1 libgcc-s1 libstdc++6 \
+  && apt-get install -y --no-install-recommends ca-certificates libatomic1 libgcc-s1 libstdc++6 libvulkan1 \
   && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/package.json /app/package-lock.json ./
 RUN npm ci --omit=dev
