@@ -15,9 +15,9 @@ export async function answerClient(db: Database.Database, adapter: QvacAdapter, 
   const sources = [...guides.map((item) => ({ id: item.id, title: item.title })), ...products.map((item) => ({ id: item.id, title: item.name }))];
   const fallback = guides.length ? guides.map((item) => `${item.title}: ${item.content}`).join(" ") : products.length ? products.map((item) => `${item.name}: ${item.description}`).join(" ") : language === "es" ? "Puedo orientarte sobre ahorro, seguridad de cuenta y productos sintéticos del catálogo local. Prueba con una pregunta como: ¿cómo puedo ahorrar? o ¿qué producto me ayuda a organizar una meta?" : "I can explain savings, account safety, and synthetic products in the local catalog. Try asking: How can I save? or Which product helps me organize a goal?";
   try {
-    const local = await adapter.complete([{ role: "user", content: `Eres un asistente educativo bancario local. Responde la pregunta del usuario en ${language === "es" ? "español claro" : "inglés claro"}. Usa únicamente la información local proporcionada. Puedes explicar productos sintéticos, ahorro y seguridad. No apruebes productos, no evalúes solicitudes, no pidas contraseñas, códigos ni datos personales, y no ejecutes transacciones. Si la pregunta pide una decisión, explica el límite en una sola frase y ofrece información útil.\n\nPregunta del usuario: ${query}\n\nInformación local autorizada: ${fallback}` }]);
+    const local = await adapter.completeAssistant([{ role: "user", content: `Responde en ${language === "es" ? "español claro" : "inglés claro"}.\n\nPregunta del usuario: ${query}\n\nInformación local autorizada: ${fallback}` }]);
     const normalized = local.trim().toLocaleLowerCase();
-    const refusalOnly = normalized.length < 40 || ["no puedo cumplir", "no puedo ayudarte", "no puedo proporcionar", "solicitar claves"].some((phrase) => normalized.includes(phrase) && !normalized.includes("puedo orientarte"));
+    const refusalOnly = normalized.length < 40 || /\b(no puedo|no soy capaz|cannot|can't|lo siento|sorry)\b/iu.test(normalized);
     if (local.trim() && !refusalOnly) return { answer: local.trim(), sources, provider: "QVAC local" };
   } catch { /* the safe local answer remains available */ }
   return { answer: fallback, sources, provider: "local-safe-fallback" };

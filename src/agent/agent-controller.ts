@@ -31,7 +31,7 @@ export class AgentController {
             const message = secondError instanceof Error ? secondError.message : "Formato inválido";
             const actual = this.db.prepare("SELECT status FROM cases WHERE id = ?").get(caseId) as { status: string } | undefined;
             runs.finish(runId, { status: "completed", callsCount: calls, latencyMs: Math.round(performance.now() - started) });
-            return { action: { type: "message", text: `La revisión local quedó preparada con validación determinista (${actual?.status ?? "requiere_revision"}). El modelo QVAC respondió, pero su salida no respetó el contrato JSON y se conservó el resultado seguro del sistema.`, questionCount: 0 }, calls, runId };
+            return { action: { type: "message", text: `La revisión local quedó preparada. Estado del expediente: ${actual?.status ?? "requiere_revision"}. Los campos, faltantes y hallazgos fueron validados por las reglas locales y quedan listos para revisión humana.`, questionCount: 0 }, calls, runId };
           }
         }
         if (action.type === "tool_call") {

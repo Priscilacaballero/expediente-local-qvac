@@ -9,7 +9,7 @@ import {
 import { z } from "zod";
 import { config } from "../config.js";
 import { MODEL_DESCRIPTOR, MODEL_NAME } from "./model-manifest.js";
-import { JSON_RESPONSE_INSTRUCTION, SYSTEM_PROMPT } from "./prompts.js";
+import { CLIENT_ASSISTANT_SYSTEM_PROMPT, JSON_RESPONSE_INSTRUCTION, SYSTEM_PROMPT } from "./prompts.js";
 
 export type QvacMessage = CompletionParams["history"][number];
 
@@ -74,6 +74,13 @@ export class QvacAdapter {
       history: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
       stream: false,
     });
+    const result = await run.final;
+    return result.contentText;
+  }
+
+  async completeAssistant(history: QvacMessage[]): Promise<string> {
+    if (!this.modelId) throw new Error("QVAC model is not initialized");
+    const run = completion({ modelId: this.modelId, history: [{ role: "system", content: CLIENT_ASSISTANT_SYSTEM_PROMPT }, ...history], stream: false });
     const result = await run.final;
     return result.contentText;
   }
