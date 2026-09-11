@@ -1,0 +1,18 @@
+{
+  "seed": 20260910,
+  "hashes": {
+    "case-0001/identidad.pdf": "08f38aa539790b0ade772c6df525875a76cadf5b8f168a9e7e73d20d542b5d66",
+    "case-0001/ingresos.pdf": "6d6019cdff249ac6530d8c4f239f4077b30602d859aa4137b67cf53b3c56a613",
+    "case-0002/identidad.pdf": "95cce2c7bc5852bbecf47d66e457613f2e1db89450be541c622f72d7bbb548b9",
+    "case-0003/identidad.pdf": "2ff87ad5f584b53507d0b4c8311883081a5b2121b696d7b421b0a65f139d4d73",
+    "case-0004/identidad.pdf": "b17166d6c4f3fe037e955e0ee42c70cbd7204d44f09d64d1d4d4ee4f93c1c389",
+    "case-0004/ingresos.pdf": "5e90b9fad2cb2cdaa7dc0afab9088a750cb2fc1907229a2ce8f625da6fcec0f2",
+    "case-0005/identidad.pdf": "3fbc091486dfae8763c8748ddff7d2ec74ef9b4860391ec9056fd7f6509e2db3",
+    "case-0005/ingresos.pdf": "900f4c3a302e51b89628d346ccc033cbd5fba1dcb997db5cb8d971b24de294e1",
+    "case-0006/vacio.pdf": "a57773c13a93e1147dc02f2c1fe86761739666a465b5ca3eab8f658cc3389c47",
+    "case-0007/escaneo.png": "2e1422682152b7f1037b3cdaf2802c60fdb6b1dbaacd165eea1e297f44730518",
+    "case-0008/identidad.pdf": "c5585d5f711dcade24f3c973b2c093e0739aadd05ec3ffd45610b30dad47709f",
+    "case-0009/pregunta.pdf": "e23a628bdc07c7f63acbd7048f7bc9ec7dee3954f7ea72b1c6698617cda5b873",
+    "case-0010/identidad.pdf": "46b883c7fb418e83bcd5e3d1e75d5665e00613e3a2e1a12ca841fd727394059e"
+  }
+}

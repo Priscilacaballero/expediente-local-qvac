@@ -1,0 +1,14 @@
+{
+  "procedureVersion": "procedure-v1",
+  "title": "Procedimiento ficticio de apertura de cuenta — DEMO",
+  "synthetic": true,
+  "rules": [
+    { "rule_id": "RULE-001", "title": "Fuente para campos requeridos", "requirement": "Todo campo requerido necesita una fuente documental.", "severity": "critical", "text": "Los ocho campos requeridos deben tener evidencia en documentos legibles; una respuesta del ejecutivo no reemplaza la fuente." },
+    { "rule_id": "RULE-002", "title": "Coincidencia de nombre", "requirement": "El nombre debe coincidir entre documentos.", "severity": "critical", "text": "Una diferencia en full_name entre documentos requiere revisión humana." },
+    { "rule_id": "RULE-003", "title": "Coincidencia de identidad", "requirement": "El documento de identidad debe coincidir.", "severity": "critical", "text": "Una diferencia en identity_document entre documentos requiere revisión humana." },
+    { "rule_id": "RULE-004", "title": "Coincidencia de ingreso y moneda", "requirement": "Ingreso y moneda deben coincidir.", "severity": "critical", "text": "monthly_income e income_currency deben ser consistentes entre fuentes." },
+    { "rule_id": "RULE-005", "title": "Contradicción", "requirement": "Una contradicción requiere revisión humana.", "severity": "critical", "text": "Una contradicción documental no prueba fraude y no puede resolverse automáticamente." },
+    { "rule_id": "RULE-006", "title": "Respuesta separada de evidencia", "requirement": "Una respuesta del usuario no sustituye evidencia documental.", "severity": "warning", "text": "Los valores user_reported permanecen separados y no eliminan un pendiente documental." }
+  ],
+  "requiredFields": ["full_name", "date_of_birth", "identity_document", "residential_address", "employment_status", "monthly_income", "income_currency", "source_of_funds"]
+}

@@ -22,3 +22,11 @@
 - Se crearon repositorios parametrizados para casos, documentos, campos, hallazgos, respuestas y ejecuciones del agente.
 - Se verificó aislamiento entre casos y persistencia después de cerrar y reabrir la base.
 - Verificación: `npm run build` y `npm test` pasan; 4 pruebas aprobadas.
+
+## Fase 4 — Fixtures y procedimiento ficticio
+
+- Estado: implementada y verificada.
+- Se creó el procedimiento local `procedure-v1` con seis reglas y ocho campos requeridos.
+- Se definieron diez casos sintéticos con resultados esperados y escenarios de faltantes, conflictos, PDF vacío, imagen, prompt injection y pregunta fuera de alcance.
+- Se creó un generador determinista con semilla `20260910`, PDFs de texto seleccionable y hashes SHA-256.
+- Verificación: `npm run seed` genera 10 casos, 13 documentos/hashes y confirma determinismo; `npm run build` y `npm test` pasan con 4 pruebas aprobadas.
