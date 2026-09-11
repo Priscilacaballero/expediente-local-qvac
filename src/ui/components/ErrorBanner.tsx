@@ -1,0 +1,1 @@
+export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: () => void }) { return <div className="error-banner"><span>!</span><div><strong>No se pudo completar la acción</strong><p>{message}</p></div>{onRetry && <button onClick={onRetry}>Reintentar</button>}</div> }

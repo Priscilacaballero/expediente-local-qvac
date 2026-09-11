@@ -70,3 +70,11 @@
 - Se configuraron multipart con límite de 10 MB, manejo de errores controlado, deduplicación por `requestId` y servicio del build de Vite.
 - El servidor queda preparado para escuchar únicamente en `127.0.0.1:4173` y devuelve `QVAC_NOT_READY` si el modelo no está disponible.
 - Verificación: build exitoso, `dist/server.js` generado y suite con 15 pruebas aprobadas.
+
+## Fase 10 — Interfaz React
+
+- Estado: implementada y verificada.
+- Se construyó una pantalla única en español con columnas de Documentos, Conversación y Revisión.
+- Se añadieron carga de PDF, estado de QVAC, mensajes de error/reintento, análisis, checklist, panel de evidencia y descarga de reporte HTML local.
+- La interfaz muestra explícitamente que usa datos sintéticos, QVAC local y que una discrepancia requiere revisión humana, no implica fraude.
+- Verificación: build de Vite exitoso y suite con 15 pruebas aprobadas.
