@@ -34,7 +34,7 @@ describe("local persistence", () => {
     database.close();
 
     const secondDatabase = new LocalDatabase(":memory:");
-    expect(secondDatabase.db.prepare("SELECT COUNT(*) AS count FROM schema_migrations").get()).toEqual({ count: 23 });
+    expect(secondDatabase.db.prepare("SELECT COUNT(*) AS count FROM schema_migrations").get()).toEqual({ count: 26 });
     secondDatabase.close();
   });
 

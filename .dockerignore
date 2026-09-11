@@ -1,0 +1,16 @@
+.git
+.github
+node_modules
+dist
+.qvac/*
+*.log
+.env
+.env.*
+!.env.example
+reports
+coverage
+*.db
+*.sqlite
+*.sqlite3
+*.gguf
+*.safetensors

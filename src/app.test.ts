@@ -10,6 +10,16 @@ describe("local API", () => {
     db.db.prepare("INSERT INTO cases (id, status, created_at, updated_at) VALUES (?, 'nuevo', ?, ?)").run("case-0001", new Date().toISOString(), new Date().toISOString());
     const { app, dependencies } = await buildApp({ db, procedure: await ProcedureSearch.load(), adapter: new QvacAdapter() });
     expect((await app.inject({ method: "GET", url: "/api/health" })).statusCode).toBe(200);
+    const useCases = (await app.inject({ method: "GET", url: "/api/platform/use-cases" })).json() as Array<{ id: string; limitations: string[] }>;
+    expect(useCases).toHaveLength(5);
+    expect(useCases.find(item => item.id === "security_review")?.limitations.join(" ")).toContain("fraude");
+    const architecture = (await app.inject({ method: "GET", url: "/api/platform/architecture" })).json() as { provider: string; pearsExtension: string };
+    expect(architecture.provider).toBe("QVAC local");
+    expect(architecture.pearsExtension).toContain("futura");
+    expect((await app.inject({ method: "GET", url: "/api/platform/status" })).json().synthetic).toBe(true);
+    const workspace = await app.inject({ method: "POST", url: "/api/platform/workspace", payload: { useCase: "document_review", role: "reviewer", caseId: "case-0001" } });
+    expect(workspace.statusCode).toBe(201);
+    expect((await app.inject({ method: "GET", url: "/api/platform/activity" })).json().length).toBeGreaterThan(0);
     expect((await app.inject({ method: "GET", url: "/api/cases" })).json()).toHaveLength(1);
     expect((await app.inject({ method: "POST", url: "/api/cases", payload: { label: "Prueba manual" } })).statusCode).toBe(201);
     expect((await app.inject({ method: "GET", url: "/api/client/products?language=es" })).json()).toHaveLength(4);

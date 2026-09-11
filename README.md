@@ -64,6 +64,26 @@ npm start
 
 `npm run seed` genera los PDFs sintéticos y los carga en SQLite. El servidor completo sirve la interfaz y la API en `127.0.0.1:4173`.
 
+### Arranque rápido con Docker
+
+Con Docker Desktop instalado:
+
+```bash
+docker compose up --build
+```
+
+Abre `http://127.0.0.1:4173`. El puerto se publica únicamente en loopback y `.qvac/` se monta como caché local persistente para QVAC y SQLite. Docker no agrega ningún proveedor cloud ni una ruta de inferencia externa.
+
+### Publicación automática en GitHub
+
+Después de cambios locales, ejecuta:
+
+```powershell
+npm run publish:github -- -Message "feat: describe change"
+```
+
+El script detecta la rama actual y el remoto `origin`, ejecuta build, pruebas y verificación offline, bloquea archivos sensibles/runtime, crea el commit y hace push. Usa las credenciales GitHub ya configuradas en tu equipo; nunca recibe tokens por argumentos ni incorpora `.env`, bases SQLite, modelos o claves.
+
 ## Datos sintéticos
 
 Los fixtures se generan con la semilla `20260910` y llevan la marca `DATOS SINTÉTICOS — DEMO`. Hay diez casos: completo, faltantes, discrepancias, PDF vacío, imagen, prompt injection, pregunta fuera de alcance y respuesta separada. `data/synthetic/hashes.json` permite comprobar que dos generaciones sean iguales.

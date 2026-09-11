@@ -16,6 +16,7 @@ import { ensureBankingData } from "./banking/banking-bootstrap.js";
 import { answerClient, answerProcedure } from "./banking/local-assistant.js";
 import { detectSyntheticRisks } from "./banking/risk-detector.js";
 import { classifyDocument } from "./documents/classification.js";
+import { ARCHITECTURE, USE_CASES, type UseCaseId, type WorkspaceRole } from "./platform/use-cases.js";
 
 type AppDependencies = { db: LocalDatabase; procedure: ProcedureSearch; adapter: QvacAdapter };
 const errors = { INVALID_INPUT: "INVALID_INPUT", NOT_FOUND: "NOT_FOUND", UNSUPPORTED_DOCUMENT_FORMAT: "UNSUPPORTED_DOCUMENT_FORMAT", QVAC_NOT_READY: "QVAC_NOT_READY", AGENT_FORMAT_ERROR: "AGENT_FORMAT_ERROR", INTERNAL_ERROR: "INTERNAL_ERROR" } as const;
@@ -31,6 +32,25 @@ export async function buildApp(dependencies?: AppDependencies): Promise<{ app: F
   await app.register(fastifyStatic, { root: resolve("dist/ui"), prefix: "/" });
   app.get("/api/session", async () => ({ id: "local", synthetic: true }));
   app.get("/api/health", async () => ({ ok: true, host: config.HOST, port: config.PORT, provider: "QVAC local", model: config.QVAC_MODEL, ready: active.adapter.isReady() }));
+  const logActivity = (useCase: UseCaseId, action: string, result: string, humanReview: "not_required" | "pending" | "completed" = "pending", workspaceId: string | null = null) => {
+    active.db.db.prepare("INSERT INTO platform_activity (id, workspace_id, use_case, action, result, human_review, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)").run(randomUUID(), workspaceId, useCase, action, result, humanReview, new Date().toISOString());
+  };
+  app.get("/api/platform/use-cases", async () => USE_CASES);
+  app.get("/api/platform/architecture", async () => ARCHITECTURE);
+  app.get("/api/platform/status", async () => ({ provider: "QVAC local", model: config.QVAC_MODEL, ready: active.adapter.isReady(), online: true, synthetic: true, humanReview: "La decisión final siempre es humana" }));
+  app.get("/api/platform/activity", async () => active.db.db.prepare("SELECT id, workspace_id AS workspaceId, use_case AS useCase, action, result, human_review AS humanReview, created_at AS createdAt FROM platform_activity ORDER BY created_at DESC LIMIT 12").all());
+  app.get("/api/platform/workspace", async () => {
+    const row = active.db.db.prepare("SELECT id, use_case AS useCase, role, case_id AS caseId, last_action AS lastAction, created_at AS createdAt, updated_at AS updatedAt FROM platform_workspaces ORDER BY updated_at DESC LIMIT 1").get() as Record<string, unknown> | undefined;
+    return row ? { ...row, localInference: { provider: "QVAC local", ready: active.adapter.isReady(), externalInference: false } } : null;
+  });
+  app.post<{ Body: { useCase?: string; role?: string; caseId?: string; lastAction?: string } }>("/api/platform/workspace", async (request, reply) => {
+    const body = z.object({ useCase: z.enum(["client_guidance", "financial_inclusion", "document_review", "operations", "security_review"]), role: z.enum(["client", "bank_operator", "reviewer", "security_analyst"]), caseId: z.string().optional(), lastAction: z.string().trim().max(160).optional() }).safeParse(request.body);
+    if (!body.success) return reply.code(400).send({ code: errors.INVALID_INPUT, message: "Contexto de trabajo inválido" });
+    const now = new Date().toISOString(); const id = randomUUID();
+    active.db.db.prepare("INSERT INTO platform_workspaces (id, use_case, role, case_id, last_action, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)").run(id, body.data.useCase, body.data.role, body.data.caseId ?? null, body.data.lastAction ?? null, now, now);
+    logActivity(body.data.useCase, "workspace_started", "Espacio de trabajo seleccionado", "pending", id);
+    return reply.code(201).send({ id, ...body.data, localInference: { provider: "QVAC local", ready: active.adapter.isReady(), externalInference: false }, createdAt: now, updatedAt: now });
+  });
   app.get<{ Querystring: { language?: string } }>("/api/client/products", async (request) => { const language = request.query.language === "en" ? "en" : "es"; return active.db.db.prepare("SELECT id, language, name, description, audience, requirements, version FROM product_catalog WHERE language = ? ORDER BY id").all(language); });
   app.get<{ Querystring: { language?: string; q?: string } }>("/api/client/guides", async (request) => { const language = request.query.language === "en" ? "en" : "es"; const query = request.query.q?.trim() ?? ""; return active.db.db.prepare("SELECT id, language, title, content, keywords, version FROM education_guides WHERE language = ? AND (lower(title) LIKE ? OR lower(content) LIKE ? OR lower(keywords) LIKE ?) ORDER BY id").all(language, `%${query.toLowerCase()}%`, `%${query.toLowerCase()}%`, `%${query.toLowerCase()}%`); });
   app.post<{ Body: { language?: string; query?: string } }>("/api/client/assistant", async (request, reply) => { const body = z.object({ language: z.enum(["es", "en"]).default("es"), query: z.string().trim().min(1).max(500) }).safeParse(request.body); if (!body.success) return reply.code(400).send({ code: errors.INVALID_INPUT, message: "Pregunta inválida" }); return answerClient(active.db.db, active.adapter, body.data.language, body.data.query); });

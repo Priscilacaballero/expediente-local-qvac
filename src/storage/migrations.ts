@@ -142,6 +142,26 @@ const migrationStatements = [
     created_at TEXT NOT NULL
   )`,
   `ALTER TABLE product_catalog ADD COLUMN search_terms TEXT NOT NULL DEFAULT ''`,
+  `CREATE TABLE IF NOT EXISTS platform_workspaces (
+    id TEXT PRIMARY KEY,
+    use_case TEXT NOT NULL,
+    role TEXT NOT NULL,
+    case_id TEXT,
+    last_action TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS platform_activity (
+    id TEXT PRIMARY KEY,
+    workspace_id TEXT,
+    use_case TEXT NOT NULL,
+    action TEXT NOT NULL,
+    result TEXT NOT NULL,
+    human_review TEXT NOT NULL CHECK (human_review IN ('not_required', 'pending', 'completed')),
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (workspace_id) REFERENCES platform_workspaces(id) ON DELETE SET NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_platform_activity_created_at ON platform_activity(created_at)`,
 ] as const;
 
 export function runMigrations(db: Database.Database): void {
