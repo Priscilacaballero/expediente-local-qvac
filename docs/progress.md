@@ -85,3 +85,10 @@
 - Se añadió `npm run offline` para comprobar loopback, puerto fijo, modelo QVAC único, procedimiento local, fixtures sintéticos y ausencia de fallback de proveedor.
 - Se eliminó la dependencia de fuentes externas en la interfaz.
 - Verificación: `npm run offline`, build y suite pasan.
+
+## Fase 12 — Evaluación
+
+- Estado: implementada y verificada.
+- Se añadió `npm run measure` para generar `docs/evaluation.md` con numeradores, denominadores y límites de la muestra sintética.
+- La evaluación cubre los 10 casos definidos, resultados esperados y escenarios de seguridad/alcance.
+- Verificación: evaluación generada, build y suite pasan con 15 pruebas aprobadas.
