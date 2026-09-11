@@ -4,9 +4,41 @@ import type { QvacAdapter } from "../qvac/qvac-adapter.js";
 import type { ProcedureSearch } from "../tools/search-procedure.js";
 
 export type LocalAnswer = { answer: string; sources: Array<{ id: string; title: string }> ; provider: "QVAC local" | "local-safe-fallback" };
+export type AssistantContextTurn = { role: "user" | "assistant"; content: string; sourceIds?: string[] };
 
 type Guide = { id: string; title: string; content: string; keywords: string };
 type Product = { id: string; name: string; description: string; audience: string; requirements: string; searchTerms: string };
+
+const normalizeText = (value: string) => value.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+function followUpAnswer(products: Product[], language: "es" | "en", query: string): LocalAnswer | null {
+  if (products.length === 0) return null;
+  const normalized = normalizeText(query);
+  const explicitIndex = normalized.match(/^([1-3])(?:[. )-]|$)/u)?.[1];
+  const selectedByIndex = explicitIndex ? products[Number(explicitIndex) - 1] : undefined;
+  const selectedByName = products.find((product) => normalized.includes(normalizeText(product.name).replace(/ demo$/u, "")));
+  const selected = selectedByIndex ?? selectedByName;
+  const isAffirmation = /^(si|yes|claro|dale|ok|okay|perfecto|quiero|me interesa)$/u.test(normalized);
+  if (!selected && !isAffirmation) return null;
+  const sources = products.map((product) => ({ id: product.id, title: product.name }));
+  if (!selected && products.length > 1) {
+    const options = products.map((product, index) => `${index + 1}) ${product.name}`).join(", ");
+    return {
+      answer: language === "es" ? `Perfecto. Para continuar necesito que elijas una opcion: ${options}. Puedes responder con el numero o con el nombre de la opcion.` : `Great. To continue, please choose one option: ${options}. You can reply with its number or name.`,
+      sources,
+      provider: "local-safe-fallback",
+    };
+  }
+  const product = selected ?? products[0]!;
+  const answer = language === "es"
+    ? `Perfecto. Sobre ${product.name}: ${product.description} Esta opcion esta pensada para ${product.audience.toLowerCase()}. Para esta demostracion necesitarias ${product.requirements.toLowerCase()}. ¿Quieres que revisemos los requisitos o como puede ayudarte con tu meta?`
+    : `Great. About ${product.name}: ${product.description} This option is intended for ${product.audience.toLowerCase()}. For this demo, you would need ${product.requirements.toLowerCase()}. Would you like to review the requirements or how it may help with your goal?`;
+  return {
+    answer: answer.replace(/\.\s*\./g, "."),
+    sources: [{ id: product.id, title: product.name }],
+    provider: "local-safe-fallback",
+  };
+}
 
 function productAnswer(products: Product[], language: "es" | "en") {
   if (products.length === 0) return "";
@@ -26,34 +58,36 @@ function guideAnswer(guides: Guide[], language: "es" | "en") {
   return language === "es" ? `Sobre ${guide.title}: ${guide.content} Si quieres, puedo darte un ejemplo o ayudarte a revisar el siguiente paso.` : `About ${guide.title}: ${guide.content} I can also give you an example or help with the next step.`;
 }
 
-export async function answerClient(db: Database.Database, adapter: QvacAdapter, language: "es" | "en", query: string): Promise<LocalAnswer> {
+export async function answerClient(db: Database.Database, _adapter: QvacAdapter, language: "es" | "en", query: string, context: AssistantContextTurn[] = []): Promise<LocalAnswer> {
   const terms = query.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/[^a-z0-9]+/).filter((term) => term.length > 3 && !["como", "para", "what", "with", "quiero", "puedo"].includes(term));
   const searchable = terms.flatMap((term) => [term, term.endsWith("ar") || term.endsWith("er") || term.endsWith("ir") ? term.slice(0, -2) : term.endsWith("s") ? term.slice(0, -1) : term]);
   const allGuides = db.prepare("SELECT id, title, content, keywords FROM education_guides WHERE language = ? ORDER BY id").all(language) as Guide[];
   const allProducts = db.prepare("SELECT id, name, description, audience, requirements, search_terms AS searchTerms FROM product_catalog WHERE language = ? ORDER BY id").all(language) as Product[];
+  const previousAssistant = [...context].reverse().find((turn) => turn.role === "assistant" && (turn.sourceIds?.length ?? 0) > 0);
+  if (previousAssistant?.sourceIds?.length) {
+    const sourceOrder = new Map(previousAssistant.sourceIds.map((id, index) => [id, index]));
+    const previousProducts = allProducts.filter((product) => sourceOrder.has(product.id)).sort((left, right) => sourceOrder.get(left.id)! - sourceOrder.get(right.id)!);
+    const followUp = followUpAnswer(previousProducts, language, query);
+    if (followUp) return followUp;
+  }
   const score = (text: string) => searchable.reduce((total, term) => total + (text.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(term) ? 1 : 0), 0);
   const rankedGuides = allGuides.map((item) => ({ item, score: score(`${item.title} ${item.content} ${item.keywords}`) })).filter(({ score: itemScore }) => searchable.length === 0 || itemScore > 0).sort((a, b) => b.score - a.score);
   const rankedProducts = allProducts.map((item) => ({ item, score: score(`${item.name} ${item.description} ${item.audience} ${item.requirements} ${item.searchTerms}`) })).filter(({ score: itemScore }) => searchable.length === 0 || itemScore > 0).sort((a, b) => b.score - a.score);
   const topGuideScore = rankedGuides[0]?.score ?? 0;
   const topProductScore = rankedProducts[0]?.score ?? 0;
+  const educationIntent = /\b(seguridad|cuid[a-z]*|proteg[a-z]*|clave|contrasena|codigo|fraude|presupuesto|gasto|gastos|pasos)\b/u.test(normalizeText(query));
   const categoryWords = new Set(["tipo", "tipos", "producto", "productos", "prestamo", "prestamos", "ofrecer", "ofrecen", "cliente", "clientes"]);
   const specificProductTerm = searchable.some((term) => !categoryWords.has(term) && rankedProducts.some(({ item }) => `${item.name} ${item.description} ${item.audience} ${item.requirements} ${item.searchTerms}`.toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(term)));
   const asksForCategory = !specificProductTerm && terms.some((term) => term.length > 4 && term.endsWith("s"));
   const guides = rankedGuides.filter(({ score: itemScore }) => itemScore === topGuideScore).map(({ item }) => item).slice(0, 3);
   const products = rankedProducts.filter(({ score: itemScore }) => asksForCategory ? itemScore > 0 : itemScore === topProductScore).map(({ item }) => item).slice(0, 3);
-  const productFirst = specificProductTerm || topProductScore > topGuideScore;
+  const productFirst = !educationIntent && (specificProductTerm || (asksForCategory && topProductScore >= topGuideScore));
   const selectedGuides = productFirst ? [] : guides;
-  const selectedProducts = productFirst ? products : topGuideScore > topProductScore ? [] : products;
+  const selectedProducts = productFirst ? products : [];
   const sources = [...selectedGuides.map((item) => ({ id: item.id, title: item.title })), ...selectedProducts.map((item) => ({ id: item.id, title: item.name }))];
   const naturalFallback = selectedProducts.length ? productAnswer(selectedProducts, language) : guideAnswer(selectedGuides, language);
   const polishedFallback = naturalFallback.replace(/\.\s*\./g, ".");
   if (sources.length === 0) return { answer: polishedFallback, sources, provider: "local-safe-fallback" };
-  try {
-    const local = await adapter.completeAssistant([{ role: "user", content: `Responde en ${language === "es" ? "español claro" : "inglés claro"}.\n\nPregunta del usuario: ${query}\n\nInformación local autorizada: ${polishedFallback}` }]);
-    const normalized = local.trim().toLocaleLowerCase();
-    const refusalOnly = normalized.length < 40 || /\b(no puedo|no soy capaz|cannot|can't|lo siento|sorry)\b/iu.test(normalized);
-    if (local.trim() && !refusalOnly && selectedProducts.length === 0) return { answer: local.trim(), sources, provider: "QVAC local" };
-  } catch { /* the safe local answer remains available */ }
   return { answer: polishedFallback, sources, provider: "local-safe-fallback" };
 }
 
