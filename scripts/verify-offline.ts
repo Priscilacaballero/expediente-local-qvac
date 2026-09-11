@@ -1,0 +1,15 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { config } from "../src/config.js";
+const checks: Array<{ name: string; ok: boolean; detail: string }> = [];
+checks.push({ name: "loopback", ok: config.HOST === "127.0.0.1", detail: config.HOST });
+checks.push({ name: "fixed-port", ok: config.PORT === 4173, detail: String(config.PORT) });
+checks.push({ name: "local-model", ok: config.QVAC_MODEL === "LLAMA_3_2_1B_INST_Q4_0", detail: config.QVAC_MODEL });
+const procedure = JSON.parse(await readFile(resolve("data/procedures/procedure-v1.json"), "utf8")) as { procedureVersion?: string; rules?: unknown[] };
+checks.push({ name: "local-procedure", ok: procedure.procedureVersion === "procedure-v1" && Array.isArray(procedure.rules), detail: procedure.procedureVersion ?? "missing" });
+const cases = JSON.parse(await readFile(resolve("data/synthetic/cases.json"), "utf8")) as { cases?: unknown[]; synthetic?: boolean };
+checks.push({ name: "synthetic-fixtures", ok: cases.synthetic === true && cases.cases?.length === 10, detail: String(cases.cases?.length ?? 0) });
+const source = await readFile(resolve("src/qvac/qvac-adapter.ts"), "utf8");
+checks.push({ name: "no-provider-fallback", ok: !source.includes("openai") && !source.includes("anthropic") && !source.includes("https://"), detail: "QVAC only" });
+const failed = checks.filter((check) => !check.ok);
+if (failed.length > 0) process.exitCode = 1;

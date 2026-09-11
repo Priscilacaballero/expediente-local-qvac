@@ -13,8 +13,8 @@
     "start": "node dist/server.js",
     "test": "vitest run",
     "seed": "tsx scripts/seed-synthetic.ts",
-    "offline": "node scripts/verify-offline.js",
-    "measure": "node scripts/measure.js",
+    "offline": "tsx scripts/verify-offline.ts",
+    "measure": "tsx scripts/measure.ts",
     "qvac:smoke": "tsx scripts/qvac-smoke-test.ts"
   },
   "dependencies": {

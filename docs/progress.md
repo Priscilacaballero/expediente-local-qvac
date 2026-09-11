@@ -78,3 +78,10 @@
 - Se añadieron carga de PDF, estado de QVAC, mensajes de error/reintento, análisis, checklist, panel de evidencia y descarga de reporte HTML local.
 - La interfaz muestra explícitamente que usa datos sintéticos, QVAC local y que una discrepancia requiere revisión humana, no implica fraude.
 - Verificación: build de Vite exitoso y suite con 15 pruebas aprobadas.
+
+## Fase 11 — Seguridad y offline
+
+- Estado: implementada y verificada.
+- Se añadió `npm run offline` para comprobar loopback, puerto fijo, modelo QVAC único, procedimiento local, fixtures sintéticos y ausencia de fallback de proveedor.
+- Se eliminó la dependencia de fuentes externas en la interfaz.
+- Verificación: `npm run offline`, build y suite pasan.
