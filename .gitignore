@@ -141,3 +141,17 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Expediente Local runtime and local-only artifacts
+.qvac/
+models/
+*.gguf
+*.safetensors
+*.pem
+*.key
+*.crt
+*.db
+*.sqlite
+*.sqlite3
+reports/
+logs/

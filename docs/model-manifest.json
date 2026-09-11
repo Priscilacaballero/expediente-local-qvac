@@ -1,0 +1,10 @@
+{
+  "sdk": "0.19.0",
+  "model": "LLAMA_3_2_1B_INST_Q4_0",
+  "sha256": "66bfbb2d48bdb77cd56bd03ef820deff3c4a74b1a09de3b917ae13e72c1a70c2",
+  "hardware": null,
+  "ramBytes": null,
+  "loadTimeMs": null,
+  "latencyMs": null,
+  "recordedAt": null
+}
