@@ -62,3 +62,11 @@
 - Se permite un solo reintento de formato y se devuelve `AGENT_FORMAT_ERROR` si vuelve a fallar.
 - Se validan herramientas, respuestas separadas y estado final mediante código.
 - Verificación: build y suite pasan con 14 pruebas aprobadas.
+
+## Fase 9 — API local
+
+- Estado: implementada y verificada.
+- Se añadieron las rutas locales de sesión, salud, casos, documentos, páginas, turnos del agente, respuestas y reportes.
+- Se configuraron multipart con límite de 10 MB, manejo de errores controlado, deduplicación por `requestId` y servicio del build de Vite.
+- El servidor queda preparado para escuchar únicamente en `127.0.0.1:4173` y devuelve `QVAC_NOT_READY` si el modelo no está disponible.
+- Verificación: build exitoso, `dist/server.js` generado y suite con 15 pruebas aprobadas.
